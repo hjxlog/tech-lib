@@ -24,18 +24,18 @@ spring:
             #需要拆分的表，可以设置多个
             tables:
                 user:   # 这里是逻辑表
-                    actual-data-nodes: ds.user$->{1..2}         # 这里的ds就是上面的ds，groovy语法
-#                    key-generator:
-#                        column: id
-#                        type: SNOWFLAKE  # 雪花算法，id列
+                    actual-data-nodes: sharding-jdbc-test$->{1..2}.user$->{1..2}         # 这里的ds就是上面的ds，groovy语法
+                    key-generator:
+                        column: id
+                        type: SNOWFLAKE  # 雪花算法，id列
                     table-strategy:     # 分表策略
                         inline:
-                            algorithm-expression: user$->{id % 2 +1}  # id % 2 +1 算出的值，比如为1，那就存入user1表
+                            algorithm-expression: user$->{id % 2 + 1}  # id % 2 +1 算出的值，比如为1，那就存入user1表
                             sharding-column: id     # 分表列，用这一列来计算
 
                     database-strategy:  # 分库策略
                         inline:
                             sharding-column: user_id
-                            algorithm-expression: 'sharding-jdbc-test$->{user_id.intdiv(2)}'
+                            algorithm-expression: sharding-jdbc-test$->{user_id % 2 + 1}
 
                 # 如果有多张表需要分库分表，则在增加节点

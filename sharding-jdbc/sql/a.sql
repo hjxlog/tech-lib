@@ -9,3 +9,4 @@ create table user2(
 	name VARCHAR(50) NOT NULL,
 	user_id BIGINT(20) NOT NULL
 );
+
