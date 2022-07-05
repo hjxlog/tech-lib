@@ -39,3 +39,14 @@ spring:
                             algorithm-expression: sharding-jdbc-test$->{user_id % 2 + 1}
 
                 # 如果有多张表需要分库分表，则在增加节点
+
+#                test_sharding:
+#                    actual-data-nodes: 'db$->{[0,1,2,3,4,10]}.case_manage$->{0..9}'
+#                    tableStrategy:
+#                        inline:
+#                            shardingColumn: tenant_id
+#                            algorithmExpression: 'case_manage$->{tenant_id % 10}'
+#                    database-strategy:
+#                        inline:
+#                            sharding-column: tenant_id
+#                            algorithm-expression: 'ssecds$->{tenant_id.intdiv( 10)}'
