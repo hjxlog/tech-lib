@@ -1,0 +1,28 @@
+spring:
+    main:
+        allow-bean-definition-overriding: true
+    shardingsphere:
+        datasource:
+            #  数据库名称，可自定义，可以为多个，以逗号隔开，每个在这里定义的库，都要在下面定义连接属性
+            names: ds   # 有多个就配置多个，比如ds1, ds2, ds3，每个都要有一个节点配置
+            ds:
+                driver-class-name: com.mysql.cj.jdbc.Driver
+                password: 123456
+                type: com.alibaba.druid.pool.DruidDataSource
+                url: jdbc:mysql://localhost:3306/sharding-jdbc-test?serverTimezone=GMT%2B8
+                username: root
+        props:
+            sql:
+                show: true
+        sharding:
+            #需要拆分的表，可以设置多个
+            tables:
+                user:   # 这里是逻辑表
+                    actual-data-nodes: ds.user$->{1..2}         # 这里的ds就是上面的ds，groovy语法
+#                    key-generator:
+#                        column: id
+#                        type: SNOWFLAKE  # 雪花算法，id列
+                    table-strategy:     # 分表策略
+                        inline:
+                            algorithm-expression: user$->{id % 2 +1}  # id % 2 +1 算出的值，比如为1，那就存入user1表
+                            sharding-column: id     # 分表列，用这一列来计算
