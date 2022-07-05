@@ -4,12 +4,18 @@ spring:
     shardingsphere:
         datasource:
             #  数据库名称，可自定义，可以为多个，以逗号隔开，每个在这里定义的库，都要在下面定义连接属性
-            names: ds   # 有多个就配置多个，比如ds1, ds2, ds3，每个都要有一个节点配置
-            ds:
+            names: sharding-jdbc-test1,sharding-jdbc-test2   # 有多个就配置多个，比如ds1, ds2, ds3，每个都要有一个节点配置
+            sharding-jdbc-test1:
                 driver-class-name: com.mysql.cj.jdbc.Driver
                 password: 123456
                 type: com.alibaba.druid.pool.DruidDataSource
-                url: jdbc:mysql://localhost:3306/sharding-jdbc-test?serverTimezone=GMT%2B8
+                url: jdbc:mysql://localhost:3306/sharding-jdbc-test1?serverTimezone=GMT%2B8
+                username: root
+            sharding-jdbc-test2:
+                driver-class-name: com.mysql.cj.jdbc.Driver
+                password: 123456
+                type: com.alibaba.druid.pool.DruidDataSource
+                url: jdbc:mysql://localhost:3306/sharding-jdbc-test2?serverTimezone=GMT%2B8
                 username: root
         props:
             sql:
@@ -26,3 +32,10 @@ spring:
                         inline:
                             algorithm-expression: user$->{id % 2 +1}  # id % 2 +1 算出的值，比如为1，那就存入user1表
                             sharding-column: id     # 分表列，用这一列来计算
+
+                    database-strategy:  # 分库策略
+                        inline:
+                            sharding-column: user_id
+                            algorithm-expression: 'sharding-jdbc-test$->{user_id.intdiv(2)}'
+
+                # 如果有多张表需要分库分表，则在增加节点
