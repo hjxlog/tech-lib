@@ -36,10 +36,23 @@ public class Test1 {
     @Test
     void search() {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_id", 101);
-        wrapper.eq("id", 1L);
+        wrapper.eq("user_id", 102);
+        wrapper.eq("id", 1544317255182626818L);
         List<Object> list = userMapper.selectObjs(wrapper);
         for (Object user : list) {
+            System.out.println(user);
+        }
+        int count = userMapper.selectCount(null);
+        System.out.println("count = " + count);
+    }
+
+    @Test
+    void search1() {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(User::getId, 1544317255182626818L)
+            .eq(User::getUserId,102);
+        List<User> list = userMapper.selectList(wrapper);
+        for (User user : list) {
             System.out.println(user);
         }
     }
